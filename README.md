@@ -1,1 +1,0 @@
-# Qmaz-Solutions
