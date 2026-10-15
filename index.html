@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qmaz Solutions</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220.2%22%20y1%3D%220.3%22%20x2%3D%220.9%22%20y2%3D%220.8%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23a23bff%22/%3E%3Cstop%20offset%3D%220.6%22%20stop-color%3D%22%23b247ff%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%233f9bff%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20d%3D%22M17.1%204.0L50.6%204.0L42.6%2023.3L58.0%2023.9L33.2%2060.0L39.4%2042.9L15.9%2042.9L23.8%2023.0L6.0%2022.5Z%22%20fill%3D%22url%28%23g%29%22%20stroke%3D%22url%28%23g%29%22%20stroke-width%3D%222.5%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#F4F6F8; --card:#fff; --ink:#14212B; --mute:#64727D; --line:#E2E8ED;
+  --brand:#0E7C6B; --brandSoft:#E3F3EF; --err:#B3261E; --errSoft:#FCE8E6; --foot:#14212B;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0F171D; --card:#17222A; --ink:#E9EEF1; --mute:#93A2AD; --line:#243541; --brandSoft:#13322D; --errSoft:#3A1C1A; --err:#F2B8B5; --foot:#0A1014; }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+[hidden]{display:none !important}
+button{font-family:inherit}
+
+/* header */
+header{background:var(--card);border-bottom:1px solid var(--line);padding:14px 24px;display:flex;align-items:center;gap:12px}
+.brandpill{display:flex;align-items:center;gap:10px;padding:6px 16px 6px 6px;border-radius:14px;background:#a8c8ff;color:#14212B;text-decoration:none}
+.brandpill h1{font-size:16px;line-height:1.1}.brandpill p{font-size:11px;opacity:.7}
+.logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#7f5cff,#b44dff);color:#fff;display:grid;place-items:center}
+.logo svg{width:20px;height:20px}
+header h1{font-size:18px}
+header p{font-size:12px;color:var(--mute)}
+.nav{position:relative;margin-left:28px}
+.navbtn{display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--ink);font-size:16px;font-weight:600;cursor:pointer;padding:8px 6px;border-radius:8px}
+.navbtn:hover{color:var(--brand)}
+.navbtn svg{transition:transform .2s}
+.navbtn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.menu{position:absolute;top:calc(100% + 8px);left:0;min-width:260px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(15,30,35,.16);padding:8px;z-index:50}
+.menu a{display:block;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--ink)}
+.menu a:hover,.menu a:focus{background:var(--brandSoft);outline:none}
+.menu a b{display:block;font-size:14px}
+.menu a small{display:block;font-size:12px;color:var(--mute);margin-top:2px}
+.who{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--mute)}
+.who b{color:var(--ink)}
+.showpw{font-weight:500;font-size:14px;display:flex;align-items:center;gap:8px;margin:12px 0 4px;font-size:14px;color:var(--ink);cursor:pointer}
+.showpw input{width:16px;height:16px;margin:0;accent-color:#0E7C6B}
+
+.pdlg{position:fixed;inset:0;background:rgba(10,16,20,.5);display:grid;place-items:center;z-index:100;padding:16px}
+.pdlg[hidden]{display:none}
+.pbox{background:var(--card);border-radius:18px;width:min(420px,100%);padding:18px 20px 20px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.pbox .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pbox .ph h2{font-size:17px}
+.pbox .x{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;color:var(--ink);padding:2px 8px;border-radius:8px}
+.pbox .x:hover{background:var(--bg)}
+.cam{position:relative;background:#000;border-radius:14px;aspect-ratio:16/10;display:grid;place-items:center;overflow:hidden;color:#fff;text-align:center;font-size:13px}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .tag{position:absolute;top:10px;right:10px;background:#f3d6ff;color:#4b1d63;font-size:12px;border-radius:999px;padding:4px 10px;z-index:2}
+.cam .msg{padding:0 16px;z-index:1}
+.pbox select{width:100%;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:14px}
+.pbox .row{display:flex;gap:10px;margin-top:12px}
+.pbox .row button{flex:1;padding:11px;border-radius:10px;font:inherit;font-size:14px;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.pbox .row .main{background:#0E7C6B;border-color:#0E7C6B;color:#fff;font-weight:600}
+.pbox .row button:disabled{opacity:.5;cursor:not-allowed}
+html.framed .who{display:none!important}
+/* embedded + signed in: show only the chat card */
+html.framed.authed header{display:none}
+html.framed.authed main{max-width:none;padding:0}
+html.framed.authed .chat{height:100vh;min-height:0;border-radius:0;border:0}
+.prof{position:relative}
+.avbtn{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);padding:0;cursor:pointer;overflow:hidden;background:linear-gradient(135deg,#7f5cff,#b44dff);color:#fff;font:700 16px system-ui,sans-serif;display:grid;place-items:center}
+.avbtn:hover,.avbtn[aria-expanded="true"]{border-color:#a23bff}
+.avbtn img{width:100%;height:100%;object-fit:cover;display:block}
+.pmenu{position:absolute;right:0;top:48px;min-width:220px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:14px;z-index:50}
+.pmenu .pn{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.pmenu .pn .avbtn{width:44px;height:44px;cursor:default;flex:none}
+.pmenu .pn b{display:block;color:var(--ink);font-size:14px}.pmenu .pn span{font-size:12px;color:var(--mute);word-break:break-all}
+.pmenu button{display:block;width:100%;text-align:left;background:none;border:0;border-radius:8px;padding:9px 10px;font:inherit;font-size:14px;color:var(--ink);cursor:pointer}
+.pmenu button:hover{background:var(--bg)}
+.linkbtn{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 12px;font-size:12px;cursor:pointer}
+.linkbtn:hover{border-color:var(--brand);color:var(--brand)}
+
+/* layout */
+main{flex:1;width:100%;max-width:1080px;margin:0 auto;padding:24px 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+h2.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
+
+/* auth */
+.authwrap{max-width:420px;margin:40px auto}
+.guest{margin-left:auto;display:flex;align-items:center;gap:10px}
+.startbtn{border:none;background:var(--brand);color:#fff;border-radius:99px;padding:9px 18px;font-weight:700;font-size:14px;cursor:pointer}
+.startbtn:hover{filter:brightness(1.08)}
+.startbtn.big{padding:14px 28px;font-size:16px}
+.ghostbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:13px 24px;font-weight:600;font-size:15px;cursor:pointer}
+.ghostbtn:hover{border-color:var(--brand);color:var(--brand)}
+.hero{text-align:center;padding:56px 12px 40px}
+.hero .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand);font-weight:700}
+.hero h2{font-size:clamp(30px,5vw,46px);line-height:1.15;margin:12px auto 14px;max-width:760px}
+.hero p{color:var(--mute);font-size:17px;line-height:1.55;max-width:560px;margin:0 auto 26px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.hero small{display:block;margin-top:14px;color:var(--mute);font-size:13px}
+.plist{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:8px}
+.pcard{padding:22px}
+.pcard h3{font-size:18px}
+.pcard .tag{color:var(--brand);font-size:13px;font-weight:600;margin-top:2px}
+.pcard p{color:var(--mute);font-size:14px;line-height:1.5;margin:10px 0 16px}
+.sechead{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:12px 0}
+.auth{padding:28px}
+.auth h2{font-size:38px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px}
+.auth .sub{color:var(--mute);font-size:15px;margin-bottom:12px;line-height:1.5}
+.auth .sub:empty{display:none}
+.switch{margin-top:20px;text-align:center;color:var(--mute);font-size:16px}
+.switch a{color:var(--brand);font-weight:700;text-decoration:underline}
+label{display:block;font-size:12px;font-weight:600;color:var(--mute);margin:12px 0 5px}
+input.f,select.f{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:11px 13px;font-size:14px;outline:none}
+input.f:focus{border-color:var(--brand)}
+.primary{width:100%;margin-top:18px;border:none;background:var(--brand);color:#fff;border-radius:10px;padding:12px;font-weight:700;font-size:14px;cursor:pointer}
+.primary:disabled{opacity:.6;cursor:wait}
+.err{background:var(--errSoft);color:var(--err);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:6px}
+
+/* chat */
+.chat{display:flex;flex-direction:column;height:calc(100vh - 260px);min-height:420px;overflow:hidden}
+.chat-head{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.chat-head .dot{width:9px;height:9px;border-radius:99px;background:#2DB67D}
+.chat-head b{font-size:15px}
+.chat-head small{color:var(--mute);font-size:12px;margin-left:auto}
+.msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:78%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5;word-wrap:break-word}
+.msg.bot{background:var(--brandSoft);align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:var(--brand);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;white-space:pre-wrap}
+.msg a{color:inherit;font-weight:600}
+.typing{opacity:.6;font-style:italic}
+.msg.ai{white-space:pre-wrap}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 18px 12px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 12px;font-size:12px;cursor:pointer}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+form.input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+form.input input{flex:1;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:11px 14px;font-size:14px;outline:none}
+form.input input:focus{border-color:var(--brand)}
+form.input button{border:none;background:var(--brand);color:#fff;border-radius:10px;padding:0 18px;font-weight:600;cursor:pointer}
+
+/* platform page */
+.back{display:inline-block;margin-bottom:14px;font-size:13px;color:var(--brand);text-decoration:none;font-weight:600}
+.back:hover{text-decoration:underline}
+.ptop{padding:22px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.ptop h2{font-size:24px}
+.ptop p{color:var(--mute);font-size:14px;margin-top:6px;max-width:640px;line-height:1.5}
+.badge{display:inline-block;font-size:11px;font-weight:700;border-radius:99px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+.badge.on{background:var(--brandSoft);color:var(--brand)}
+.badge.off{background:var(--errSoft);color:var(--err)}
+.badge.load{background:var(--bg);color:var(--mute)}
+.openbtn{background:var(--brand);color:#fff;text-decoration:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:16px 0}
+.stat{padding:16px}
+.stat .v{font-size:26px;font-weight:800;margin-top:4px}
+.stat .l{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.tbl{padding:18px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+tr:last-child td{border-bottom:none}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.twocol{grid-template-columns:1fr}}
+ul.plain{list-style:none}
+ul.plain li{padding:7px 0;font-size:14px;border-bottom:1px solid var(--line)}
+ul.plain li:last-child{border-bottom:none}
+.note{font-size:12px;color:var(--mute);margin-top:12px}
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+
+<header>
+  <a class="brandpill" href="#/">
+    <div class="logo"><svg viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="1" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+    <div><h1>Qmaz Solutions</h1><p>Dashboard</p></div>
+  </a>
+  <nav class="nav" id="nav" hidden>
+    <button class="navbtn" id="prodBtn" aria-haspopup="true" aria-expanded="false" aria-controls="prodMenu">
+      Platforms
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="menu" id="prodMenu" role="menu" hidden></div>
+  </nav>
+  <div class="guest" id="guest" hidden>
+    <button class="linkbtn" id="gSignIn" style="padding:9px 16px;font-size:14px">Login</button>
+    <button class="startbtn" id="gStart">Start for Free</button>
+  </div>
+  <div class="who prof" id="who" hidden>
+    <button class="avbtn" id="avBtn" aria-haspopup="true" aria-expanded="false" aria-label="Profile menu"><span id="avIn"></span></button>
+    <div class="pmenu" id="pMenu" role="menu" hidden>
+      <div class="pn"><div class="avbtn" id="avBig"></div><div><b id="whoName"></b><span id="whoMail"></span></div></div>
+      <button id="photoBtn" role="menuitem">Change photo</button>
+      <button id="photoDel" role="menuitem" hidden>Remove photo</button>
+      <button id="signOut" role="menuitem">Sign out</button>
+      <input type="file" id="photoFile" accept="image/*" hidden>
+    </div>
+  </div>
+</header>
+
+
+<div class="pdlg" id="pDlg" hidden role="dialog" aria-modal="true" aria-label="Change photo">
+  <div class="pbox">
+    <div class="ph"><h2>Change photo</h2><button class="x" id="pClose" aria-label="Close">&times;</button></div>
+    <div class="cam"><span class="tag" id="camTag">Preview</span><video id="camVid" autoplay playsinline muted hidden></video><div class="msg" id="camMsg">Starting camera…</div></div>
+    <select id="camSel" aria-label="Camera"></select>
+    <div class="row">
+      <button class="main" id="camSnap" disabled>Take photo</button>
+      <button id="camFile">Upload from files</button>
+    </div>
+  </div>
+</div>
+
+<main>
+  <!-- PUBLIC HOME (shown first, before sign in) -->
+  <section id="viewLanding" hidden>
+    <div class="hero">
+      <div class="eyebrow">Qmaz Solutions</div>
+      <h2>Welcome to Qmaz Solutions</h2>
+      <p>Chat with the Qmaz assistant and get started in minutes.</p>
+      <div class="cta">
+        <button class="startbtn big" id="heroStart">Start for Free</button>
+        <button class="ghostbtn" id="heroSignIn">Login</button>
+      </div>
+      <small>Free to join. No payment details needed.</small>
+    </div>
+    <h2 class="sechead" id="landingHead" hidden>Our platforms</h2>
+    <div class="plist" id="landingPlatforms"></div>
+  </section>
+
+  <!-- SIGN IN / SIGN UP -->
+  <section id="viewAuth" class="authwrap" hidden>
+    <a class="back" href="#/" style="display:inline-block;margin-bottom:12px;font-size:13px;color:var(--brand);text-decoration:none;font-weight:600">← Back to home</a>
+    <div class="card auth">
+      <h2 id="authTitle">Login</h2>
+      <p class="sub" id="authSub"></p>
+      <div id="authErr" class="err" hidden></div>
+      <form id="authForm" novalidate>
+        <div id="nameRow" hidden><label for="aName">Full name</label><input class="f" id="aName" autocomplete="name"></div>
+        <label for="aEmail">Email</label><input class="f" id="aEmail" type="email" autocomplete="email">
+        <label for="aPass">Password</label><input class="f" id="aPass" type="password" autocomplete="current-password">
+        <div id="confRow" hidden><label for="aConf">Confirm password</label><input class="f" id="aConf" type="password" autocomplete="new-password"></div>
+        <label for="aGrade">Grade</label><select class="f" id="aGrade"><option value="">Select grade</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6">Grade 6</option><option value="7">Grade 7</option><option value="8">Grade 8</option><option value="9">Grade 9</option><option value="10">Grade 10</option><option value="11">Grade 11</option><option value="12">Grade 12</option></select>
+        <label class="showpw"><input type="checkbox" id="showPw"> Show password</label>
+        <button class="primary" id="authBtn" type="submit">Login</button>
+      </form>
+      <form id="verifyForm" novalidate hidden>
+        <label for="vCode">6-digit code</label>
+        <input class="f" id="vCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="123456">
+        <button class="primary" id="verifyBtn" type="submit">Verify and create account</button>
+        <div style="display:flex;justify-content:space-between;gap:8px;margin-top:14px">
+          <button type="button" class="linkbtn" id="resendBtn">Resend code</button>
+          <button type="button" class="linkbtn" id="vBack">Change email</button>
+        </div>
+      </form>
+      <p class="switch" id="switchLine"></p>
+    </div>
+  </section>
+
+  <!-- CHATBOT -->
+  <section id="viewHome" hidden>
+    <div class="card chat">
+      <div class="chat-head"><span class="dot"></span><b>Qmaz Assistant</b><small>Ask me anything</small></div>
+      <div class="msgs" id="msgs" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <form class="input" id="chatForm">
+        <input id="chatText" placeholder="Type your message…" autocomplete="off" aria-label="Message">
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- PLATFORM DETAILS -->
+  <section id="viewPlatform" hidden></section>
+</main>
+<script>
+/* ============ DATA — edit here ============ */
+// Add new platforms here; each one gets an entry in the "Platforms" menu and its own details page.
+// "url" is where the platform runs. Details are fetched live from it.
+const PLATFORMS = [];
+
+/* ============ HELPERS ============ */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+
+/* ============ AUTH (stored in this browser only) ============ */
+async function hash(pw){
+  try{
+    if(window.crypto && crypto.subtle){
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("qmaz:" + pw));
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+  }catch(e){}
+  let h = 5381; for(const c of "qmaz:" + pw) h = ((h << 5) + h + c.charCodeAt(0)) >>> 0;
+  return "x" + h.toString(16);
+}
+const getUsers = () => store.get("qmaz_users", []);
+const session = () => store.get("qmaz_session", null);
+
+let mode = "in";
+function setMode(m){
+  mode = m;
+  $("nameRow").hidden = $("confRow").hidden = m === "in";
+  $("authTitle").textContent = m === "in" ? "Login" : "Sign Up";
+  $("authSub").textContent = "";
+  $("authBtn").textContent = m === "in" ? "Login" : "Sign Up";
+  $("aPass").autocomplete = m === "in" ? "current-password" : "new-password";
+  $("switchLine").innerHTML = m === "in"
+    ? 'Don\'t have an account? <a href="#/signup">Signup</a>'
+    : 'Already have an account? <a href="#/signin">Login</a>';
+  showErr("");
+}
+function showErr(msg){ $("authErr").hidden = !msg; $("authErr").textContent = msg || ""; }
+
+
+/* talk to the Qmaz server (server.js) */
+async function api(path, body){
+  // Hosted mode (e.g. Neocities): a Google Apps Script web app does the email codes and AI chat. See config.js.
+  if(window.QMAZ_BACKEND){
+    let data = {};
+    try{
+      const r = await fetch(window.QMAZ_BACKEND, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(Object.assign({ action: path.replace(/^\/api\//, "") }, body)) });
+      data = await r.json();
+    }catch(e){ throw Object.assign(new Error("Can't reach the Qmaz service. Check your internet connection."), { status: 0, code: "offline" }); }
+    if(data.error) throw Object.assign(new Error(data.error), { status: data.status || 400, code: data.code });
+    return data;
+  }
+  let res;
+  try{ res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); }
+  catch(e){ throw Object.assign(new Error("Can't reach the Qmaz server. Start it with start.bat and open http://localhost:3001."), { status: 0 }); }
+  let data = {}; try{ data = await res.json(); }catch(e){}
+  if(!res.ok){
+    if(!data.error && [404, 405, 501].includes(res.status)) throw Object.assign(new Error("This page isn't running through the Qmaz server. Start it with start.bat and open http://localhost:3001."), { status: res.status });
+    throw Object.assign(new Error(data.error || "Something went wrong (" + res.status + ")."), { status: res.status, code: data.code });
+  }
+  return data;
+}
+
+let pending = null, cooldownTimer = null;
+function showVerify(on){
+  $("authForm").hidden = on;
+  $("switchLine").hidden = on;
+  $("verifyForm").hidden = !on;
+  if(on){
+    $("authTitle").textContent = "Check your inbox";
+    $("authSub").innerHTML = pending.testMode
+      ? "<b>Test mode:</b> no email was sent. Look in the black server window for the 6-digit code for <b>" + esc(pending.email) + "</b>."
+      : "We sent a 6-digit code to <b>" + esc(pending.email) + "</b>. It can take a minute — check Spam too.";
+    $("vCode").value = ""; $("vCode").focus();
+  } else { pending = null; clearInterval(cooldownTimer); setMode(mode); }
+}
+function startCooldown(sec){
+  const b = $("resendBtn"); clearInterval(cooldownTimer); b.disabled = true;
+  let left = sec; b.textContent = "Resend in " + left + "s";
+  cooldownTimer = setInterval(() => {
+    left--; if(left <= 0){ clearInterval(cooldownTimer); b.disabled = false; b.textContent = "Resend code"; }
+    else b.textContent = "Resend in " + left + "s";
+  }, 1000);
+}
+
+$("authForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const email = $("aEmail").value.trim().toLowerCase();
+  const pass = $("aPass").value;
+  if(!/^\S+@\S+\.\S+$/.test(email)) return showErr("Enter a valid email address.");
+  if(pass.length < 6) return showErr("Password must be at least 6 characters.");
+  const grade = $("aGrade").value;
+  if(!grade) return showErr("Select your grade.");
+  $("authBtn").disabled = true;
+  try{
+    const users = getUsers();
+    const h = await hash(pass);
+    if(mode === "up"){
+      const name = $("aName").value.trim();
+      if(!name) return showErr("Enter your name.");
+      if(pass !== $("aConf").value) return showErr("Passwords do not match.");
+      if(users.some(u => u.email === email)) return showErr("An account with this email already exists. Login instead.");
+      $("authBtn").textContent = "Sending code…";
+      let sentRes;
+      try{ sentRes = await api("/api/send-code", { email, name }); }
+      catch(err){ return showErr(err.message); }
+      pending = { name, email, grade, hash: h, testMode: !!sentRes.testMode };
+      showErr(""); showVerify(true); startCooldown(30);
+    } else {
+      const u = users.find(u => u.email === email);
+      if(!u) return showErr("No account found with this email. Sign up first.");
+      if(u.hash !== h) return showErr("Incorrect password.");
+      if(u.grade !== grade){ u.grade = grade; store.set("qmaz_users", users); }
+      store.set("qmaz_session", { name: u.name, email: u.email, grade: u.grade });
+      $("authForm").reset(); setMode("in"); route();
+    }
+  } finally { $("authBtn").disabled = false; if(!pending) $("authBtn").textContent = mode === "in" ? "Login" : "Sign Up"; }
+});
+
+$("verifyForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const code = $("vCode").value.trim();
+  if(!/^\d{6}$/.test(code)) return showErr("Enter the 6-digit code from your email.");
+  $("verifyBtn").disabled = true;
+  try{
+    await api("/api/verify-code", { email: pending.email, code });
+    const users = getUsers();
+    users.push({ name: pending.name, email: pending.email, grade: pending.grade, hash: pending.hash, verified: true, createdAt: new Date().toISOString() });
+    store.set("qmaz_users", users);
+    store.set("qmaz_session", { name: pending.name, email: pending.email, grade: pending.grade });
+    $("authForm").reset(); showErr(""); showVerify(false); setMode("in"); route();
+  }catch(err){ showErr(err.message); }
+  finally{ $("verifyBtn").disabled = false; }
+});
+
+$("resendBtn").onclick = async () => {
+  try{ await api("/api/send-code", { email: pending.email, name: pending.name }); showErr(""); startCooldown(30); }
+  catch(err){ showErr(err.message); }
+};
+$("vBack").onclick = () => { showErr(""); showVerify(false); };
+
+$("signOut").onclick = () => { store.del("qmaz_session"); location.hash = ""; pending = null; showVerify(false); setMode("in"); route(); };
+
+/* ============ CHATBOT (keyword rules, runs in the browser) ============ */
+const SUGGESTIONS = ["What is Qmaz Solutions?", "How can I contact you?"];
+
+function reply(q){
+  const t = q.toLowerCase();
+  if(/\b(hi|hello|hey)\b|good (morning|afternoon|evening)/.test(t)) return "Hello! Welcome to Qmaz Solutions. How can I help you today?";
+  if(/what is|about|qmaz|offer|service|what do you/.test(t)) return "Qmaz Solutions builds online platforms. Ask me anything and I'll do my best to help.";
+  if(/contact|email|phone|reach|support|help/.test(t)) return "Contact details haven't been added yet. They can be added in the reply() function in this file.";
+  if(/thank/.test(t)) return "You're welcome!";
+  return "I'm a simple assistant and can't answer that yet. Please try asking in a different way.";
+}
+
+function addMsg(html, who){
+  const d = document.createElement("div");
+  d.className = "msg " + who;
+  if(who === "user" || who === "ai") d.textContent = html; else d.innerHTML = html;
+  if(who === "ai") d.className = "msg bot ai";
+  $("msgs").appendChild(d);
+  $("msgs").scrollTop = $("msgs").scrollHeight;
+  return d;
+}
+const chatHistory = [];
+let lastAiNote = "";
+async function send(text){
+  text = text.trim(); if(!text) return;
+  addMsg(text, "user");
+  chatHistory.push({ role: "user", content: text });
+  const wait = addMsg("Thinking…", "bot"); wait.classList.add("typing");
+  $("chatText").disabled = true;
+  try{
+    const r = await api("/api/chat", { messages: chatHistory.slice(-10) });
+    wait.remove();
+    addMsg(r.reply, "ai");
+    chatHistory.push({ role: "assistant", content: r.reply });
+  }catch(err){
+    wait.remove();
+    if(err.status === 429 && err.code !== "quota"){
+      addMsg(esc(err.message), "bot"); chatHistory.pop();
+    } else {
+      // The AI could not answer (offline, key/model problem, quota, not set up): still help with the basic answers, and say why once per reason
+      const offline = navigator.onLine === false || err.code === "offline";
+      const why = offline ? "You appear to be offline, so I can't reach the AI right now. Check your internet connection."
+        : err.code === "not_set" || err.status === 0 || [404, 405, 501].includes(err.status) && !err.code ? "AI answers aren't set up yet. The owner can add an API key (see SETUP-AI.txt)."
+        : err.message;
+      const basic = reply(text);
+      addMsg(basic, "bot");
+      chatHistory.push({ role: "assistant", content: basic.replace(/<[^>]+>/g, "") });
+      if(lastAiNote !== why){ lastAiNote = why; addMsg("Note: " + esc(why) + " Using basic answers for now.", "bot"); }
+    }
+  }finally{
+    $("chatText").disabled = false; $("chatText").focus();
+  }
+}
+$("chatForm").addEventListener("submit", e => { e.preventDefault(); send($("chatText").value); $("chatText").value = ""; });
+$("chips").innerHTML = SUGGESTIONS.map(s => `<button type="button" class="chip">${esc(s)}</button>`).join("");
+$("chips").addEventListener("click", e => { if(e.target.classList.contains("chip")) send(e.target.textContent); });
+
+let greeted = false;
+function greet(){
+  if(greeted) return; greeted = true;
+  const s = session();
+  addMsg(`Hi ${esc((s && s.name || "").split(" ")[0] || "there")}! I'm the Qmaz Solutions assistant. How can I help you today?`, "bot");
+}
+
+/* ============ PLATFORM DETAILS PAGE (fetches live data) ============ */
+let platformToken = 0;
+function openUrl(p){
+  const s = session(); if(!s) return p.url;
+  return p.url + (p.url.includes("?") ? "&" : "?") + "qmaz_name=" + encodeURIComponent(s.name) + "&qmaz_email=" + encodeURIComponent(s.email) + (s.grade ? "&qmaz_grade=" + encodeURIComponent(s.grade) : "");
+}
+async function showPlatform(id){
+  const p = PLATFORMS.find(x => x.id === id);
+  const el = $("viewPlatform");
+  if(!p){ el.innerHTML = '<a class="back" href="#/">← Back</a><div class="card" style="padding:22px">Platform not found.</div>'; return; }
+  const token = ++platformToken;
+
+  el.innerHTML = `
+    <a class="back" href="#/">← Back to dashboard</a>
+    <div class="card ptop">
+      <div>
+        <h2>${esc(p.name)} <span class="badge load" id="pStatus">Fetching details…</span></h2>
+        <p>${esc(p.about)}</p>
+      </div>
+      <a class="openbtn" href="${esc(openUrl(p))}" target="_blank" rel="noopener">Open ${esc(p.name)}</a>
+    </div>
+    <div id="pLive"></div>
+`;
+
+  try{
+    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 6000);
+    const res = await fetch(p.url.replace(/\/$/, "") + "/" + p.dataFile, { signal: ctl.signal, cache: "no-store" });
+    clearTimeout(to);
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if(token !== platformToken) return;
+
+    const grades = Object.keys(data).sort((a, b) => a - b);
+    const subjects = new Set();
+    let total = 0;
+    const rows = grades.map(g => {
+      const subs = Object.keys(data[g]);
+      let q = 0; subs.forEach(s => { subjects.add(s); q += (data[g][s].questions || []).length; });
+      total += q;
+      return `<tr><td>Grade ${esc(g)}</td><td>${esc(subs.join(", "))}</td><td>${q}</td></tr>`;
+    }).join("");
+
+    $("pStatus").className = "badge on"; $("pStatus").textContent = "Online";
+    $("pLive").innerHTML = `
+      <div class="stats">
+        <div class="card stat"><div class="l">Grades</div><div class="v">${grades.length}</div></div>
+        <div class="card stat"><div class="l">Subjects</div><div class="v">${subjects.size}</div></div>
+        <div class="card stat"><div class="l">Assignment questions</div><div class="v">${total}</div></div>
+      </div>
+      <div class="card tbl"><h2 class="eyebrow">Assignments by grade</h2>
+        <table><thead><tr><th>Grade</th><th>Subjects</th><th>Questions</th></tr></thead><tbody>${rows}</tbody></table>
+        <p class="note">Fetched live from ${esc(p.url)}/${esc(p.dataFile)} at ${new Date().toLocaleTimeString()}.</p>
+      </div>`;
+  }catch(err){
+    if(token !== platformToken) return;
+    // QE not running: show nothing extra (no error card).
+    $("pStatus").remove();
+    $("pLive").innerHTML = "";
+  }
+}
+
+
+$("showPw").onchange = e => { $("aPass").type = $("aConf").type = e.target.checked ? "text" : "password"; };
+
+/* ============ PROFILE PHOTO (cropped to a circle) ============ */
+const photoKey = () => { const s = session(); return s ? "qmaz_photo:" + s.email : null; };
+function renderProfile(){
+  const s = session(); if(!s) return;
+  const photo = store.get(photoKey(), null);
+  const fill = el => { el.innerHTML = photo ? '<img alt="" src="' + photo + '">' : esc((s.name || "?").trim().charAt(0).toUpperCase()); };
+  fill($("avBtn")); fill($("avBig"));
+  $("whoName").textContent = s.name; $("whoMail").textContent = s.email;
+  $("photoDel").hidden = !photo;
+  if(typeof postProfile === "function") postProfile();
+}
+function setProf(open){ $("pMenu").hidden = !open; $("avBtn").setAttribute("aria-expanded", open ? "true" : "false"); }
+$("avBtn").onclick = e => { e.stopPropagation(); setProf($("pMenu").hidden); };
+$("pMenu").onclick = e => e.stopPropagation();
+document.addEventListener("click", () => setProf(false));
+document.addEventListener("keydown", e => { if(e.key === "Escape") setProf(false); });
+$("photoBtn").onclick = () => { setProf(false); openPhoto(); };
+$("photoDel").onclick = () => { store.del(photoKey()); renderProfile(); setProf(false); };
+function savePhotoFrom(src, w, h){
+  const n = Math.min(w, h), c = document.createElement("canvas");
+  c.width = c.height = 160;   // clip: centered square, shown as a circle
+  c.getContext("2d").drawImage(src, (w - n) / 2, (h - n) / 2, n, n, 0, 0, 160, 160);
+  store.set(photoKey(), c.toDataURL("image/jpeg", 0.85));
+  renderProfile();
+}
+$("photoFile").onchange = e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = "";
+  if(!f || !/^image\//.test(f.type)) return;
+  const url = URL.createObjectURL(f), img = new Image();
+  img.onload = () => { URL.revokeObjectURL(url); savePhotoFrom(img, img.width, img.height); closePhoto(); };
+  img.onerror = () => URL.revokeObjectURL(url);
+  img.src = url;
+};
+
+/* camera dialog */
+let camStream = null;
+function stopCam(){ if(camStream){ camStream.getTracks().forEach(t => t.stop()); camStream = null; } $("camVid").srcObject = null; $("camVid").hidden = true; $("camSnap").disabled = true; }
+async function startCam(deviceId){
+  stopCam();
+  const msg = $("camMsg"); msg.hidden = false; msg.textContent = "Starting camera…";
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ msg.textContent = "Camera not available here. Use “Upload from files”."; return; }
+  try{
+    camStream = await navigator.mediaDevices.getUserMedia({ video: deviceId ? { deviceId: { exact: deviceId } } : true, audio: false });
+    $("camVid").srcObject = camStream; $("camVid").hidden = false; msg.hidden = true; $("camSnap").disabled = false;
+    const cams = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === "videoinput");
+    const cur = camStream.getVideoTracks()[0].getSettings().deviceId;
+    $("camSel").innerHTML = cams.map((d, i) => '<option value="' + esc(d.deviceId) + '"' + (d.deviceId === cur ? " selected" : "") + ">" + esc(d.label || "Camera " + (i + 1)) + "</option>").join("");
+  }catch(err){
+    msg.textContent = err && err.name === "NotAllowedError" ? "Camera access was blocked. Allow it in the browser, or use “Upload from files”." : "No camera found. Use “Upload from files”.";
+    $("camSel").innerHTML = '<option>No camera available</option>';
+  }
+}
+function openPhoto(){ $("pDlg").hidden = false; startCam(); }
+function closePhoto(){ stopCam(); $("pDlg").hidden = true; }
+$("pClose").onclick = closePhoto;
+$("pDlg").onclick = e => { if(e.target === $("pDlg")) closePhoto(); };
+$("camSel").onchange = e => startCam(e.target.value);
+$("camFile").onclick = () => $("photoFile").click();
+$("camSnap").onclick = () => { const v = $("camVid"); if(v.videoWidth){ savePhotoFrom(v, v.videoWidth, v.videoHeight); closePhoto(); } };
+document.addEventListener("keydown", e => { if(e.key === "Escape" && !$("pDlg").hidden) closePhoto(); });
+
+
+/* ============ EMBEDDED MODE: send profile to the parent page (shown in the parent page top bar) ============ */
+const FRAMED = window.parent !== window;
+let PARENT_ORIGIN = "http://localhost:3000";
+try{ if(document.referrer) PARENT_ORIGIN = new URL(document.referrer).origin; }catch(e){}
+if(FRAMED) document.documentElement.classList.add("framed");
+function postProfile(){
+  if(!FRAMED) return;
+  const s = session();
+  const msg = s ? { type: "qmaz-profile", signedIn: true, name: s.name, email: s.email, photo: store.get("qmaz_photo:" + s.email, "") }
+                : { type: "qmaz-profile", signedIn: false };
+  try{ window.parent.postMessage(msg, PARENT_ORIGIN); }catch(e){}
+}
+window.addEventListener("message", e => {
+  if(!FRAMED || e.origin !== PARENT_ORIGIN || e.source !== window.parent || !e.data || e.data.type !== "qmaz-cmd") return;
+  if(e.data.cmd === "photo" && session()) openPhoto();
+  else if(e.data.cmd === "signout") $("signOut").click();
+});
+
+/* ============ ROUTER ============ */
+function route(){
+  const s = session();
+  document.documentElement.classList.toggle("authed", !!s);
+  const h = location.hash || "#/";
+  $("who").hidden = !s;
+  $("nav").hidden = !s || !PLATFORMS.length;
+  $("guest").hidden = !!s;
+  setMenu(false);
+  if(!s){
+    postProfile();
+    // signed out: public home first; Sign in / Start for Free open the form
+    const authPage = h === "#/signin" || h === "#/signup";
+    $("viewLanding").hidden = authPage;
+    $("viewAuth").hidden = !authPage;
+    $("viewHome").hidden = $("viewPlatform").hidden = true;
+    $("guest").hidden = authPage;
+    if(authPage && $("verifyForm").hidden){ const want = h === "#/signup" ? "up" : "in"; if(mode !== want) setMode(want); }
+    window.scrollTo(0, 0);
+    return;
+  }
+  $("viewLanding").hidden = true; $("viewAuth").hidden = true;
+  renderProfile(); setProf(false); postProfile();
+
+  const m = h.match(/^#\/platform\/([\w-]+)/);
+  $("viewPlatform").hidden = !m;
+  $("viewHome").hidden = !!m;
+  if(m) showPlatform(m[1]); else greet();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+
+/* ============ PUBLIC HOME ============ */
+const goStart = () => { location.hash = "#/signup"; };
+const goSignIn = () => { location.hash = "#/signin"; };
+$("gStart").onclick = $("heroStart").onclick = goStart;
+$("gSignIn").onclick = $("heroSignIn").onclick = goSignIn;
+$("landingPlatforms").innerHTML = PLATFORMS.map(p =>
+  `<div class="card pcard"><h3>${esc(p.name)}</h3><div class="tag">${esc(p.tagline || "")}</div><p>${esc(p.about)}</p>` +
+  `<button class="startbtn" data-start>Start for Free</button></div>`).join("");
+$("landingHead").hidden = !PLATFORMS.length;
+$("landingPlatforms").addEventListener("click", e => { if(e.target.hasAttribute("data-start")) goStart(); });
+
+/* ============ "OUR PRODUCTS" MENU ============ */
+function setMenu(open){
+  $("prodMenu").hidden = !open;
+  $("prodBtn").setAttribute("aria-expanded", open ? "true" : "false");
+}
+$("prodMenu").innerHTML = PLATFORMS.map(p =>
+  `<a role="menuitem" href="#/platform/${p.id}"><b>${esc(p.name)}</b><small>${esc(p.tagline || "")}</small></a>`).join("");
+$("prodBtn").onclick = e => { e.stopPropagation(); setMenu($("prodMenu").hidden); };
+$("prodMenu").addEventListener("click", () => setMenu(false));
+document.addEventListener("click", e => { if(!$("nav").contains(e.target)) setMenu(false); });
+document.addEventListener("keydown", e => { if(e.key === "Escape") { setMenu(false); $("prodBtn").focus(); } });
+
+/* ============ INIT ============ */
+setMode("in");
+route();
+</script>
+</body>
+</html>
